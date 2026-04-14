@@ -178,8 +178,9 @@ function verify() {
   let userAns = "", correctAns = "";
 
   if (mode === 0 || mode === 2) {
-    ok = ex.answer.every(a => selected.has(a)) && selected.size === ex.answer.length;
-    userAns = [...selected].join(', ') || "Ninguna";
+    // Si no hay nada seleccionado, ok sigue siendo false
+    ok = (selected.size > 0) && ex.answer.every(a => selected.has(a)) && selected.size === ex.answer.length;
+    userAns = [...selected].join(', ') || "Ninguna selección";
     correctAns = ex.answer.join(', ');
   } else {
     ok = ex.pairs.every((p, i) => rels[i] === p.ans);
@@ -191,13 +192,18 @@ function verify() {
   if(ok) score += 10;
   report.push({ n: (mode*3)+qIdx+1, ok, u: userAns, c: correctAns, e: ex.explain });
   
+  // 1. Primero redibujamos para que aparezcan los colores (correct/wrong/missed)
+  init();
+
+  // 2. Luego manipulamos los elementos de esa interfaz recién dibujada
   const fb = document.getElementById('fb');
   fb.innerHTML = `<b>${ok ? '✓ ¡Excelente!' : '✗ Revisalo'}</b><br>${ex.explain}`;
   fb.className = 'feedback ' + (ok ? 'ok' : 'fail');
   fb.style.display = 'block';
+
+  // Forzamos la visibilidad de los botones correctamente
   document.getElementById('btn-c').style.display = 'none';
   document.getElementById('btn-n').style.display = 'block';
-  init();
 }
 
 function next() {
