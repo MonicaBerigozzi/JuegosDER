@@ -111,14 +111,14 @@ const DATA = {
     { text: "Se necesita un programa que administre los datos de los pedidos de una tienda online.", pool: ["Producto","Categoría","Cliente","Pedido","Vendedor","Precio","Descripción","Cantidad"], answer: ["Producto","Categoría","Cliente","Pedido","Vendedor"], explain: "Producto, Categoría, Cliente, Pedido y Vendedor son entidades." }
   ],
   1: [
-    { pairs: [{ a: "Estudiante", b: "Curso", ans: "*-*", choices: ["1-1","1-*","*-1","*-*"] }, { a: "Empleado", b: "Departamento", ans: "*-1", choices: ["1-1","1-*","*-1","*-*"] }, { a: "Persona", b: "DNI", ans: "1-1", choices: ["1-1","1-*","*-1","*-*"] }], explain: "Estudiante-Curso es *-*, Empleado-Dpto es *-1 y Persona-DNI es 1-1." },
-    { pairs: [{ a: "Médico", b: "Paciente", ans: "*-*", choices: ["1-1","1-*","*-1","*-*"] }, { a: "Pedido", b: "Producto", ans: "*-*", choices: ["1-1","1-*","*-1","*-*"] }, { a: "País", b: "Capital", ans: "1-1", choices: ["1-1","1-*","*-1","*-*"] }], explain: "Médico-Paciente es *-*, Pedido-Producto es *-* y País-Capital es 1-1." },
-    { pairs: [{ a: "Autor", b: "Libro", ans: "*-*", choices: ["1-1","1-*","*-1","*-*"] }, { a: "Factura", b: "Cliente", ans: "*-1", choices: ["1-1","1-*","*-1","*-*"] }, { a: "Vuelo", b: "Avión", ans: "*-1", choices: ["1-1","1-*","*-1","*-*"] }], explain: "Autor-Libro es *-*, Factura-Cliente es *-1 y Vuelo-Avión es *-1." }
+    { pairs: [{ a: "Estudiante", b: "Curso", ans: "*-1", choices: ["1-1","1-*","*-1","*-*"] }, { a: "Empleado", b: "Departamento", ans: "*-1", choices: ["1-1","1-*","*-1","*-*"] }, { a: "Persona", b: "DNI", ans: "1-1", choices: ["1-1","1-*","*-1","*-*"] }], explain: "Cada Estudiante pertenece a un solo curso pero cada Curso puede tener muchos Estudiantes, Cada Empleado sólo puede pertenecer a un Departamento pero cada Departamento puede tener muchos Empleados y Cada Persona sólo puede tener un DNI y cada DNI sólo puede pertenecer a una persona." },
+    { pairs: [{ a: "Médico", b: "Paciente", ans: "*-*", choices: ["1-1","1-*","*-1","*-*"] }, { a: "Pedido", b: "Producto", ans: "*-*", choices: ["1-1","1-*","*-1","*-*"] }, { a: "País", b: "Capital", ans: "1-1", choices: ["1-1","1-*","*-1","*-*"] }], explain: "Cada Médico puede atender a muchos Pacientes y cada Paciente puede atenderse con muchos Médicos, Cada Pedido puede tener muchos Productos y cada Producto puede estar en muchos Pedidos y Cada País puede tener sólo una Capital y cada Capital sólo puede estar en un País." },
+    { pairs: [{ a: "Autor", b: "Libro", ans: "*-*", choices: ["1-1","1-*","*-1","*-*"] }, { a: "Factura", b: "Cliente", ans: "*-1", choices: ["1-1","1-*","*-1","*-*"] }, { a: "Vuelo", b: "Avión", ans: "*-1", choices: ["1-1","1-*","*-1","*-*"] }], explain: "Cada Autor puede escribir muchos Libros y cada Libro puede tener más de un Autor, Cada Factura se va a hacer a sólo un Cliente pero cada Cliente puede tener muchas Facturas hechas y Cada Vuelo va a ser realizado por un único Avión pero cada Avión puede realizar muchos Vuelos." }
   ],
   2: [
     { entity: "Cliente", pool: ["cod_cliente","nombre","apellido","email","precio_venta","stock","fecha_alta","teléfono"], answer: ["cod_cliente","nombre","apellido","email","fecha_alta","teléfono"], explain: "Atributos propios de Cliente: cod, nombre, apellido, email, fecha y tel." },
-    { entity: "Producto", pool: ["cod_producto","nombre","precio","stock","email_cliente","descripción","código_barras"], answer: ["cod_producto","nombre","precio","stock","descripción","código_barras"], explain: "Atributos de Producto: cod, nombre, precio, stock, descripción y barras." },
-    { entity: "Turno médico", pool: ["cod_turno","fecha","hora","estado","cod_médico","especialidad_turno","motivo","DNI_paciente"], answer: ["cod_turno","fecha","hora","estado","especialidad_turno","motivo"], explain: "Atributos del turno: cod, fecha, hora, estado, especialidad y motivo." }
+    { entity: "Producto", pool: ["cod_producto","denominacion","precio","stock","email_cliente","descripcion","codigo_barras"], answer: ["cod_producto","denominacion","precio","stock","descripcion","codigo_barras"], explain: "Atributos de Producto: cod, denominacion, precio, stock, descripcion y barras." },
+    { entity: "TurnoMedico", pool: ["cod_turno","fecha","hora","estado","cod_medico","especialidad_turno","motivo","DNI_paciente"], answer: ["cod_turno","fecha","hora","estado","especialidad_turno","motivo"], explain: "Atributos del turno: cod, fecha, hora, estado, especialidad y motivo." }
   ]
 };
 
@@ -137,7 +137,7 @@ function init() {
       <div class="entities-grid">${ex.pool.map(e => `<div class="entity-chip ${getClass(e, ex.answer)}" onclick="toggle('${e}')">${e}</div>`).join('')}</div>`;
   } else if (mode === 1) {
     container.innerHTML = `
-      <div class="problem-card"><div class="problem-label">Relaciones</div><div class="problem-text">Seleccioná la cardinalidad adecuada:</div></div>
+      <div class="problem-card"><div class="problem-label">Relaciones</div><div class="problem-text">Seleccioná la relación adecuada:</div></div>
       ${ex.pairs.map((p, i) => `
         <div class="relation-row">
           <div class="entity-box">${p.a}</div>
