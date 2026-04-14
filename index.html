@@ -226,23 +226,79 @@ function finish() {
 
 function generatePDF() {
   const doc = new jsPDF();
-  const pct = Math.round((score/90)*100);
-  doc.setFontSize(18); doc.text("Informe de Práctica: ER.lab", 20, 20);
-  doc.setFontSize(14); doc.text(`Fecha: ${new Date().toLocaleDateString()} | Puntos: ${score}/90`, 20, 30);
-  doc.setFontSize(45);
-  doc.setTextColor(29, 158, 117);
+  const pct = Math.round((score / 90) * 100);
+  const pageWidth = 170; 
+
+  // --- ENCABEZADO ---
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(18);
+  doc.setTextColor(40, 40, 40);
+  doc.text("Informe de Práctica: ER.lab", 20, 20);
+  
+  doc.setFontSize(10);
+  doc.setFont(undefined, "normal");
+  doc.setTextColor(100, 100, 100);
+  doc.text(`Fecha: ${new Date().toLocaleDateString()} | ID de Sesión: ${Math.floor(Date.now()/1000)}`, 20, 27);
+
+  // --- RESULTADO DESTACADO (Tamaño Ajustado) ---
+  // Un tamaño 35 es grande y claro sin ser exagerado
+  doc.setFontSize(35);
+  doc.setTextColor(29, 158, 117); // El verde de la app
   doc.text(`${pct}%`, 20, 45);
-  let y = 80;
+  
+  doc.setFontSize(12);
+  doc.setTextColor(60, 60, 60);
+  doc.text(`Calificación final: ${score}/90 puntos`, 55, 43); // Lo ponemos al lado del %
+
+  doc.setDrawColor(220, 220, 220);
+  doc.line(20, 52, 190, 52); // Línea decorativa
+
+  let y = 65;
+
+  // --- LISTADO DE EJERCICIOS ---
   report.forEach(r => {
-    if(y > 270) { doc.addPage(); y = 20; }
-    doc.setFont(undefined, 'bold'); doc.text(`Ejercicio ${r.n} [${r.ok?'CORRECTO':'INCORRECTO'}]`, 20, y); y+=6;
-    doc.setFont(undefined, 'normal');
-    doc.text(doc.splitTextToSize("Tu respuesta: " + r.u, 170), 20, y); y+=8;
-    doc.setTextColor(29, 158, 117); doc.text(doc.splitTextToSize("Correcto: " + r.c, 170), 20, y); y+=8;
-    doc.setTextColor(100); doc.text(doc.splitTextToSize("Nota: " + r.e, 170), 20, y);
-    doc.setTextColor(0); y+=15;
+    // Control de salto de página
+    if (y > 250) {
+      doc.addPage();
+      y = 25;
+    }
+
+    // Título Ejercicio con color dinámico
+    doc.setFont(undefined, 'bold');
+    doc.setFontSize(11);
+    if (r.ok) {
+      doc.setTextColor(29, 158, 117); // Verde
+    } else {
+      doc.setTextColor(180, 50, 50); // Rojo suave
+    }
+    doc.text(`Ejercicio ${r.n}: ${r.ok ? 'LOGRADO' : 'A REVISAR'}`, 20, y);
+    
+    y += 6;
+    doc.setTextColor(40, 40, 40);
+    doc.setFontSize(10);
+
+    // Función para manejar textos largos sin que se pisen
+    const addText = (label, content, color = [40, 40, 40]) => {
+      doc.setFont(undefined, 'bold');
+      doc.text(label, 25, y);
+      doc.setFont(undefined, 'normal');
+      doc.setTextColor(...color);
+      
+      const lines = doc.splitTextToSize(content, 150);
+      doc.text(lines, 45, y);
+      return y + (lines.length * 5) + 2;
+    };
+
+    y = addText("Tu rta:", r.u);
+    y = addText("Correcto:", r.c, [29, 158, 117]);
+    
+    doc.setFont(undefined, 'italic');
+    y = addText("Feedback:", r.e, [100, 100, 100]);
+
+    y += 6; // Espacio entre bloques
   });
-  doc.save("Entrega_ERlab.pdf");
+
+  doc.save(`Entrega_ERlab.pdf`);
 }
 
 init();
