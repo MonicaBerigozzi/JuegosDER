@@ -34,7 +34,8 @@
     .mode-tabs { display: flex; gap: 8px; margin-bottom: 1.5rem; }
     .tab { flex: 1; padding: 10px 8px; border: 0.5px solid var(--color-border-secondary); border-radius: 8px; background: var(--color-background-primary); cursor: pointer; font-size: 13px; font-family: 'Sora', sans-serif; color: var(--color-text-secondary); text-align: center; transition: all 0.15s; }
     .tab.active { background: #1D9E75; border-color: #1D9E75; color: white; font-weight: 500; }
-    
+
+    .instruction-text { font-size: 14px; font-weight: 600; color: #1D9E75; margin-bottom: 12px; }
     .problem-card { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
     .problem-label { font-size: 11px; font-weight: 500; color: #0F6E56; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
     .problem-text { font-size: 15px; color: var(--color-text-primary); line-height: 1.6; }
@@ -133,6 +134,7 @@ function init() {
 
   if (mode === 0) {
     container.innerHTML = `
+    <div class="instruction-text">Seleccioná las entidades que corresponden al problema:</div>
       <div class="problem-card"><div class="problem-label">Enunciado</div><div class="problem-text">${ex.text}</div></div>
       <div class="entities-grid">${ex.pool.map(e => `<div class="entity-chip ${getClass(e, ex.answer)}" onclick="toggle('${e}')">${e}</div>`).join('')}</div>`;
   } else if (mode === 1) {
@@ -224,9 +226,13 @@ function finish() {
 
 function generatePDF() {
   const doc = new jsPDF();
+  const pct = Math.round((score/90)*100);
   doc.setFontSize(18); doc.text("Informe de Práctica: ER.lab", 20, 20);
-  doc.setFontSize(11); doc.text(`Fecha: ${new Date().toLocaleDateString()} | Puntos: ${score}/90`, 20, 30);
-  let y = 45;
+  doc.setFontSize(14); doc.text(`Fecha: ${new Date().toLocaleDateString()} | Puntos: ${score}/90`, 20, 30);
+  doc.setFontSize(45);
+  doc.setTextColor(29, 158, 117);
+  doc.text(`${pct}%`, 20, 45);
+  let y = 80;
   report.forEach(r => {
     if(y > 270) { doc.addPage(); y = 20; }
     doc.setFont(undefined, 'bold'); doc.text(`Ejercicio ${r.n} [${r.ok?'CORRECTO':'INCORRECTO'}]`, 20, y); y+=6;
