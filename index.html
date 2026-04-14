@@ -2,64 +2,47 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ER.lab - Práctica de Diagramas</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap');
-      
-      :root {
-        --color-bg: #ffffff;
-        --color-bg-sec: #f8faf9;
-        --color-primary: #1D9E75;
-        --color-text: #1a1a1a;
-        --color-text-sec: #666;
-        --color-border: #e0e0e0;
-      }
-
       * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { background-color: var(--color-bg); color: var(--color-text); }
-      
       .app { font-family: 'Sora', sans-serif; padding: 1.5rem; max-width: 860px; margin: 0 auto; }
-      
-      .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 0.5px solid var(--color-border); }
-      .logo { font-family: 'Space Mono', monospace; font-size: 18px; font-weight: 700; color: var(--color-text); }
-      .logo span { color: var(--color-primary); }
+      .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 0.5px solid #eee; }
+      .logo { font-family: 'Space Mono', monospace; font-size: 15px; font-weight: 700; color: #1a1a1a; }
+      .logo span { color: #1D9E75; }
       .score-bar { display: flex; gap: 16px; align-items: center; }
-      .score-pill { background: var(--color-bg-sec); border: 0.5px solid var(--color-border); border-radius: 20px; padding: 4px 14px; font-size: 13px; }
-      
+      .score-pill { background: #f8faf9; border: 0.5px solid #e0e0e0; border-radius: 20px; padding: 4px 14px; font-size: 13px; }
       .mode-tabs { display: flex; gap: 8px; margin-bottom: 1.5rem; }
-      .tab { flex: 1; padding: 10px; border: 0.5px solid var(--color-border); border-radius: 8px; background: white; cursor: pointer; font-size: 13px; transition: all 0.15s; }
-      .tab.active { background: var(--color-primary); border-color: var(--color-primary); color: white; font-weight: 500; }
-      
-      .problem-card { background: var(--color-bg-sec); border: 1px solid var(--color-border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; }
-      .problem-label { font-size: 11px; font-weight: 700; color: var(--color-primary); text-transform: uppercase; margin-bottom: 8px; }
-      .problem-text { font-size: 15px; line-height: 1.6; }
-      
+      .tab { flex: 1; padding: 10px; border: 0.5px solid #e0e0e0; border-radius: 8px; background: #fff; cursor: pointer; font-size: 13px; text-align: center; color: #666; }
+      .tab.active { background: #1D9E75; border-color: #1D9E75; color: white; font-weight: 500; }
+      .problem-card { background: #f8faf9; border: 0.5px solid #e0e0e0; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; }
+      .problem-label { font-size: 11px; font-weight: 500; color: #0F6E56; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+      .problem-text { font-size: 15px; color: #1a1a1a; line-height: 1.6; }
       .entities-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 1.5rem; }
-      .entity-chip { padding: 10px 18px; border: 1.5px solid var(--color-border); border-radius: 8px; cursor: pointer; font-family: 'Space Mono', monospace; font-size: 14px; transition: all 0.2s; }
-      .entity-chip.selected { background: #E1F5EE; border-color: var(--color-primary); }
-      .entity-chip.correct { background: #d4edda; border-color: #28a745; }
-      .entity-chip.wrong { background: #f8d7da; border-color: #dc3545; }
-      
-      .relation-row { display: grid; grid-template-columns: 1fr 120px 1fr; gap: 12px; align-items: center; margin-bottom: 12px; }
-      .entity-box { background: var(--color-bg-sec); border: 1px solid var(--color-border); border-radius: 8px; padding: 12px; text-align: center; font-family: 'Space Mono', monospace; }
-      .rel-select { padding: 10px; border-radius: 8px; border: 1.5px solid var(--color-border); width: 100%; cursor: pointer; }
-      
+      .entity-chip { padding: 8px 16px; border: 1.5px solid #e0e0e0; border-radius: 8px; background: #fff; cursor: pointer; font-size: 14px; font-family: 'Space Mono', monospace; transition: all 0.15s; }
+      .entity-chip.selected { background: #E1F5EE; border-color: #1D9E75; color: #085041; }
+      .entity-chip.correct { background: #E1F5EE; border-color: #0F6E56; }
+      .entity-chip.wrong { background: #FAECE7; border-color: #993C1D; }
+      .entity-chip.missed { border: 2px dashed #0F6E56; color: #0F6E56; }
+      .relation-area { display: flex; flex-direction: column; gap: 12px; margin-bottom: 1.5rem; }
+      .relation-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center; }
+      .entity-box { background: #f8faf9; border: 0.5px solid #e0e0e0; border-radius: 8px; padding: 10px 14px; text-align: center; font-family: 'Space Mono', monospace; font-size: 13px; }
+      .rel-select { padding: 8px 12px; border: 1.5px solid #e0e0e0; border-radius: 8px; background: #fff; font-size: 13px; cursor: pointer; }
       .attr-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
-      .attr-chip { padding: 8px 16px; border: 1px solid var(--color-border); border-radius: 20px; cursor: pointer; font-size: 13px; }
-      .attr-chip.sel-attr { background: #E1F5EE; border-color: var(--color-primary); }
-
-      .actions { display: flex; gap: 12px; margin-top: 20px; }
-      .btn-check { background: var(--color-primary); color: white; border: none; border-radius: 8px; padding: 12px 24px; cursor: pointer; font-weight: 600; }
-      .btn-next { background: #333; color: white; border: none; border-radius: 8px; padding: 12px 24px; cursor: pointer; display: none; }
-      
-      .feedback { display: none; padding: 15px; border-radius: 8px; margin-top: 15px; font-size: 14px; }
-      .feedback.ok { background: #e7f3ef; border: 1px solid var(--color-primary); }
-      .feedback.fail { background: #fdf2f2; border: 1px solid #dc3545; }
-
-      .results-panel { text-align: center; padding: 40px 20px; display: none; }
-      .btn-pdf { background: #e74c3c; color: white; border: none; border-radius: 8px; padding: 14px 28px; cursor: pointer; font-size: 16px; font-weight: 600; margin-top: 20px; }
+      .attr-chip { padding: 6px 14px; border: 1px solid #e0e0e0; border-radius: 20px; background: #fff; cursor: pointer; font-size: 13px; }
+      .attr-chip.sel-attr { background: #E1F5EE; border-color: #1D9E75; }
+      .attr-chip.correct-attr { background: #EAF3DE; border-color: #3B6D11; }
+      .attr-chip.wrong-attr { background: #FAECE7; border-color: #993C1D; }
+      .actions { display: flex; gap: 12px; align-items: center; }
+      .btn-check { background: #1D9E75; color: white; border: none; border-radius: 8px; padding: 11px 24px; cursor: pointer; font-weight: 500; }
+      .btn-next { background: #f8faf9; color: #1a1a1a; border: 0.5px solid #e0e0e0; border-radius: 8px; padding: 11px 24px; cursor: pointer; display: none; }
+      .feedback { display: none; padding: 12px 16px; border-radius: 8px; font-size: 14px; margin-top: 12px; line-height: 1.5; }
+      .feedback.ok { background: #E1F5EE; color: #085041; border: 0.5px solid #5DCAA5; }
+      .feedback.fail { background: #FAECE7; color: #4A1B0C; border: 0.5px solid #F0997B; }
+      .results-panel { display: none; text-align: center; padding: 2rem 1rem; }
+      .results-score { font-family: 'Space Mono', monospace; font-size: 48px; font-weight: 700; color: #1D9E75; }
+      .pdf-btn { background: #e74c3c; color: white; border: none; border-radius: 8px; padding: 14px 28px; cursor: pointer; font-family: 'Sora', sans-serif; font-weight: 600; margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -68,24 +51,24 @@
   <div class="header">
     <div class="logo">ER<span>.</span>lab</div>
     <div class="score-bar">
+      <div class="score-pill">Ejercicio <b id="q-num">1</b> de <b id="q-total">9</b></div>
       <div class="score-pill">Puntos: <b id="score-display">0</b></div>
     </div>
   </div>
   
-  <div id="main-interface">
+  <div id="main-game">
     <div class="mode-tabs">
-      <div class="tab active" id="tab-0">1. Entidades</div>
-      <div class="tab" id="tab-1">2. Relaciones</div>
-      <div class="tab" id="tab-2">3. Atributos</div>
+      <div class="tab active" id="tab0">Entidades</div>
+      <div class="tab" id="tab1">Relaciones</div>
+      <div class="tab" id="tab2">Atributos</div>
     </div>
-
     <div id="game-area"></div>
   </div>
 
   <div id="results-area" class="results-panel">
-    <h1 style="font-size: 48px; color: var(--color-primary);" id="final-pct">0%</h1>
-    <p id="final-stats" style="margin-bottom: 20px;">Completaste todos los ejercicios.</p>
-    <button class="btn-pdf" onclick="generatePDF()">Descargar PDF para Classroom</button>
+    <div class="results-score" id="final-pct">0%</div>
+    <div id="final-stats" style="margin: 1rem 0; color: #666;"></div>
+    <button class="pdf-btn" onclick="generatePDF()">Descargar Informe PDF</button>
   </div>
 </div>
 
@@ -95,225 +78,251 @@ const { jsPDF } = window.jspdf;
 const EXERCISES = {
   0: [
     {
-      text: "Se necesita un programa que administre los datos de las herramientas de un taller mecánico. Se deben registrar las herramientas, los mecánicos que las usan y las reparaciones realizadas.",
-      pool: ["Herramienta","Mecánico","Reparación","Taller","Marca","Precio","Fecha","Cod_herramienta"],
-      answer: ["Herramienta","Mecánico","Reparación"],
-      explain: "Las entidades principales son Herramienta, Mecánico y Reparación. Marca y Precio son atributos."
+      text: "Se necesita un programa que administre los datos de una biblioteca: sus libros, los socios que los toman prestados, y los autores que los escriben. También se registran las sucursales donde se devuelven.",
+      pool: ["Libro","Socio","Autor","Sucursal","Teléfono","Color","Préstamo","Dirección","Precio"],
+      answer: ["Libro","Socio","Autor","Sucursal"],
+      explain: "Las entidades son los objetos principales del dominio: Libro, Socio, Autor y Sucursal."
     },
     {
-      text: "Se necesita un programa que gestione las ventas de una librería. Se deben guardar los libros, los clientes que compran y los empleados que realizan la atención.",
-      pool: ["Libro","Cliente","Empleado","Venta","Precio","Nombre","Dirección","Cod_libro"],
-      answer: ["Libro","Cliente","Empleado","Venta"],
-      explain: "Libro, Cliente, Empleado y Venta son las entidades que interactúan en el sistema."
+      text: "Se necesita un programa que registre los médicos que atienden pacientes, las especialidades de cada médico, y los turnos que se asignan. Los insumos médicos se asocian a cada internación.",
+      pool: ["Médico","Paciente","Especialidad","Turno","Insumo","Historia clínica","Nombre","Fecha","Sala"],
+      answer: ["Médico","Paciente","Especialidad","Turno","Insumo"],
+      explain: "Médico, Paciente, Especialidad, Turno e Insumo son entidades con existencia propia."
+    },
+    {
+      text: "Se necesita un programa que maneje una tienda online: productos que pertenecen a categorías. Los clientes hacen pedidos y los vendedores gestionan los mismos.",
+      pool: ["Producto","Categoría","Cliente","Pedido","Vendedor","Precio","Descripción","Cantidad","Foto"],
+      answer: ["Producto","Categoría","Cliente","Pedido","Vendedor"],
+      explain: "Producto, Categoría, Cliente, Pedido y Vendedor son las entidades principales."
     }
   ],
   1: [
     {
       pairs: [
-        { a: "Cliente", b: "Factura", ans: "1-*", choices: ["1-1","1-*","*-1","*-*"] },
-        { a: "Alumno", b: "Materia", ans: "*-*", choices: ["1-1","1-*","*-1","*-*"] },
-        { a: "Persona", b: "Huella Digital", ans: "1-1", choices: ["1-1","1-*","*-1","*-*"] }
+        { a: "Estudiante", b: "Curso", ans: "*-*", choices: ["1-1","1-*","*-1","*-*"] },
+        { a: "Empleado", b: "Departamento", ans: "*-1", choices: ["1-1","1-*","*-1","*-*"] },
+        { a: "Persona", b: "DNI", ans: "1-1", choices: ["1-1","1-*","*-1","*-*"] }
       ],
-      explain: "Un cliente tiene muchas facturas (1-*). Un alumno cursa muchas materias y una materia tiene muchos alumnos (*-*). Una persona tiene una huella (1-1)."
+      explain: "Muchos estudiantes en muchos cursos (*-*). Muchos empleados en un departamento (*-1). Una persona un DNI (1-1)."
+    },
+    {
+      pairs: [
+        { a: "Médico", b: "Paciente", ans: "*-*", choices: ["1-1","1-*","*-1","*-*"] },
+        { a: "Pedido", b: "Producto", ans: "*-*", choices: ["1-1","1-*","*-1","*-*"] },
+        { a: "País", b: "Capital", ans: "1-1", choices: ["1-1","1-*","*-1","*-*"] }
+      ],
+      explain: "Médicos y pacientes se relacionan muchos a muchos. Pedidos y productos también. Un país tiene una capital."
+    },
+    {
+      pairs: [
+        { a: "Autor", b: "Libro", ans: "*-*", choices: ["1-1","1-*","*-1","*-*"] },
+        { a: "Factura", b: "Cliente", ans: "*-1", choices: ["1-1","1-*","*-1","*-*"] },
+        { a: "Vuelo", b: "Avión", ans: "*-1", choices: ["1-1","1-*","*-1","*-*"] }
+      ],
+      explain: "Un autor muchos libros y viceversa. Muchas facturas a un cliente. Muchos vuelos un avión."
     }
   ],
   2: [
     {
+      entity: "Cliente",
+      allAttrs: ["cod_cliente","nombre","apellido","email","precio_venta","stock","fecha_alta","teléfono","dirección"],
+      answer: ["cod_cliente","nombre","apellido","email","fecha_alta","teléfono","dirección"],
+      explain: "Los atributos de Cliente son sus datos personales. Stock y Precio son de Producto."
+    },
+    {
       entity: "Producto",
-      allAttrs: ["cod_producto","nombre","precio","stock","cod_cliente","nombre_proveedor","descripcion"],
-      answer: ["cod_producto","nombre","precio","stock","descripcion"],
-      explain: "Los atributos propios son el código, nombre, precio, stock y descripción. Los demás son referencias a otras entidades."
+      allAttrs: ["cod_producto","nombre","precio","stock","email_cliente","descripción","categoría","código_barras"],
+      answer: ["cod_producto","nombre","precio","stock","descripción","código_barras"],
+      explain: "Atributos propios de Producto: código, nombre, precio, stock, descripción y barras."
+    },
+    {
+      entity: "Turno médico",
+      allAttrs: ["cod_turno","fecha","hora","estado","cod_médico","especialidad_turno","motivo_consulta","DNI_paciente"],
+      answer: ["cod_turno","fecha","hora","estado","especialidad_turno","motivo_consulta"],
+      explain: "El turno tiene código, fecha, hora, estado, especialidad y motivo. Médico y Paciente son claves foráneas."
     }
   ]
 };
 
-let currentMode = 0;
-let currentEx = 0;
-let score = 0;
-let history = []; // Para el PDF
-let selectedItems = new Set();
-let relAnswers = {};
+let currentMode = 0, currentIdx = 0, score = 0, totalAnswered = 0;
+let selected = new Set(), rels = {}, isChecked = false;
+let reportData = [];
 
 function render() {
   const container = document.getElementById('game-area');
-  const ex = EXERCISES[currentMode][currentEx];
+  const ex = EXERCISES[currentMode][currentIdx];
+  const qNum = (currentMode * 3) + currentIdx + 1;
   
-  if (!ex) {
-    if (currentMode < 2) {
-      currentMode++;
-      currentEx = 0;
-      updateTabs();
-      render();
-    } else {
-      showFinalResults();
-    }
-    return;
-  }
+  document.getElementById('q-num').innerText = qNum;
+  document.getElementById('score-display').innerText = score;
 
   if (currentMode === 0) renderEntities(container, ex);
   else if (currentMode === 1) renderRelations(container, ex);
   else renderAttributes(container, ex);
 }
 
-function updateTabs() {
-    document.querySelectorAll('.tab').forEach((t, i) => {
-        t.classList.toggle('active', i === currentMode);
-    });
-}
-
 function renderEntities(container, ex) {
   container.innerHTML = `
-    <div class="problem-card">
-      <div class="problem-label">Enunciado Técnico</div>
-      <div class="problem-text">${ex.text}</div>
-    </div>
+    <div class="problem-card"><div class="problem-label">Consigna</div><div class="problem-text">${ex.text}</div></div>
     <div class="entities-grid">
-      ${ex.pool.map(item => `<div class="entity-chip ${selectedItems.has(item)?'selected':''}" onclick="toggleSelect('${item}')">${item}</div>`).join('')}
+      ${ex.pool.map(e => {
+        let cls = 'entity-chip' + (selected.has(e) ? ' selected' : '');
+        if(isChecked) {
+            if(ex.answer.includes(e) && selected.has(e)) cls += ' correct';
+            else if(!ex.answer.includes(e) && selected.has(e)) cls += ' wrong';
+            else if(ex.answer.includes(e)) cls += ' missed';
+        }
+        return `<div class="${cls}" onclick="toggle('${e}')">${e}</div>`;
+      }).join('')}
     </div>
     <div class="actions">
-        <button class="btn-check" id="check-btn" onclick="checkEntities()">Verificar</button>
-        <button class="btn-next" id="next-btn" onclick="nextStep()">Siguiente</button>
+      <button class="btn-check" id="btn-check" onclick="checkEntities()">Verificar</button>
+      <button class="btn-next" id="btn-next" onclick="next()">Siguiente →</button>
     </div>
-    <div id="feedback" class="feedback"></div>
-  `;
+    <div id="fb" class="feedback"></div>`;
 }
 
 function renderRelations(container, ex) {
   container.innerHTML = `
-    <div class="problem-card">
-      <div class="problem-label">Relaciones y Cardinalidad</div>
-      <div class="problem-text">Indica la relación correcta entre estas entidades:</div>
+    <div class="problem-card"><div class="problem-label">Cardinalidad</div><div class="problem-text">Elegí la opción correcta para cada par:</div></div>
+    <div class="relation-area">
+      ${ex.pairs.map((p, i) => `
+        <div class="relation-row">
+          <div class="entity-box">${p.a}</div>
+          <select class="rel-select" onchange="rels[${i}]=this.value" ${isChecked?'disabled':''}>
+            <option value="">—</option>
+            ${p.choices.map(c => `<option value="${c}" ${rels[i]===c?'selected':''}>${c}</option>`).join('')}
+          </select>
+          <div class="entity-box">${p.b}</div>
+        </div>`).join('')}
     </div>
-    ${ex.pairs.map((p, i) => `
-      <div class="relation-row">
-        <div class="entity-box">${p.a}</div>
-        <select class="rel-select" id="rel-${i}" onchange="saveRel(${i}, this.value)">
-          <option value="">?</option>
-          ${p.choices.map(c => `<option value="${c}">${c}</option>`).join('')}
-        </select>
-        <div class="entity-box">${p.b}</div>
-      </div>
-    `).join('')}
     <div class="actions">
-        <button class="btn-check" id="check-btn" onclick="checkRelations()">Verificar</button>
-        <button class="btn-next" id="next-btn" onclick="nextStep()">Siguiente</button>
+      <button class="btn-check" id="btn-check" onclick="checkRelations()">Verificar</button>
+      <button class="btn-next" id="btn-next" onclick="next()">Siguiente →</button>
     </div>
-    <div id="feedback" class="feedback"></div>
-  `;
+    <div id="fb" class="feedback"></div>`;
 }
 
 function renderAttributes(container, ex) {
   container.innerHTML = `
-    <div class="problem-card">
-      <div class="problem-label">Atributos de Entidad</div>
-      <div class="problem-text">Selecciona los atributos que pertenecen a: <b>${ex.entity}</b></div>
-    </div>
+    <div class="problem-card"><div class="problem-label">Atributos</div><div class="problem-text">Seleccioná los atributos de: <b>${ex.entity}</b></div></div>
     <div class="attr-chips">
-      ${ex.allAttrs.map(a => `<div class="attr-chip ${selectedItems.has(a)?'sel-attr':''}" onclick="toggleSelect('${a}')">${a}</div>`).join('')}
+      ${ex.allAttrs.map(a => {
+        let cls = 'attr-chip' + (selected.has(a) ? ' sel-attr' : '');
+        if(isChecked) {
+            if(ex.answer.includes(a) && selected.has(a)) cls += ' correct-attr';
+            else if(!ex.answer.includes(a) && selected.has(a)) cls += ' wrong-attr';
+        }
+        return `<div class="${cls}" onclick="toggle('${a}')">${a}</div>`;
+      }).join('')}
     </div>
     <div class="actions">
-        <button class="btn-check" id="check-btn" onclick="checkAttributes()">Verificar</button>
-        <button class="btn-next" id="next-btn" onclick="nextStep()">Finalizar</button>
+      <button class="btn-check" id="btn-check" onclick="checkAttributes()">Verificar</button>
+      <button class="btn-next" id="btn-next" onclick="next()">Siguiente →</button>
     </div>
-    <div id="feedback" class="feedback"></div>
-  `;
+    <div id="fb" class="feedback"></div>`;
 }
 
-function toggleSelect(item) {
-    if (document.getElementById('next-btn').style.display === 'block') return;
-    if (selectedItems.has(item)) selectedItems.delete(item);
-    else selectedItems.add(item);
-    render();
-}
-
-function saveRel(i, val) { relAnswers[i] = val; }
+function toggle(item) { if(!isChecked) { selected.has(item) ? selected.delete(item) : selected.add(item); render(); } }
 
 function checkEntities() {
-    const ex = EXERCISES[0][currentEx];
-    const isCorrect = ex.answer.every(a => selectedItems.has(a)) && selectedItems.size === ex.answer.size;
-    processResult(isCorrect, ex.explain, `Entidades: ${[...selectedItems].join(', ')}`);
+  const ex = EXERCISES[0][currentIdx];
+  const isCorrect = ex.answer.every(a => selected.has(a)) && selected.size === ex.answer.length;
+  showFeedback(isCorrect, ex.explain, `Elegiste: ${Array.from(selected).join(', ') || 'Nada'}. Correcto: ${ex.answer.join(', ')}`);
 }
 
 function checkRelations() {
-    const ex = EXERCISES[1][currentEx];
-    const isCorrect = ex.pairs.every((p, i) => relAnswers[i] === p.ans);
-    processResult(isCorrect, ex.explain, "Cardinalidades");
+  const ex = EXERCISES[1][currentIdx];
+  const isCorrect = ex.pairs.every((p, i) => rels[i] === p.ans);
+  const userAns = ex.pairs.map((p,i) => `${p.a}-${p.b}: ${rels[i]||'?'}`).join(' | ');
+  const correctAns = ex.pairs.map(p => `${p.a}-${p.b}: ${p.ans}`).join(' | ');
+  showFeedback(isCorrect, ex.explain, `Elegiste: ${userAns}. Correcto: ${correctAns}`);
 }
 
 function checkAttributes() {
-    const ex = EXERCISES[2][currentEx];
-    const isCorrect = ex.answer.every(a => selectedItems.has(a)) && selectedItems.size === ex.answer.size;
-    processResult(isCorrect, ex.explain, `Atributos: ${[...selectedItems].join(', ')}`);
+  const ex = EXERCISES[2][currentIdx];
+  const isCorrect = ex.answer.every(a => selected.has(a)) && selected.size === ex.answer.length;
+  showFeedback(isCorrect, ex.explain, `Elegiste: ${Array.from(selected).join(', ')}. Correcto: ${ex.answer.join(', ')}`);
 }
 
-function processResult(correct, explain, userAns) {
-    if (correct) score += 10;
-    history.push({ mode: currentMode, correct, detail: userAns });
-    
-    const fb = document.getElementById('feedback');
-    fb.style.display = 'block';
-    fb.className = 'feedback ' + (correct ? 'ok' : 'fail');
-    fb.innerHTML = `<b>${correct ? '¡Excelente!' : 'Para revisar:'}</b> ${explain}`;
-    
-    document.getElementById('check-btn').style.display = 'none';
-    document.getElementById('next-btn').style.display = 'block';
-    document.getElementById('score-display').innerText = score;
+function showFeedback(correct, explain, debugInfo) {
+  isChecked = true;
+  if(correct) score += 10;
+  totalAnswered++;
+  
+  const fb = document.getElementById('fb');
+  fb.innerHTML = `<b>${correct ? '✓ Correcto' : '✗ Incorrecto'}</b><br>${explain}`;
+  fb.className = 'feedback ' + (correct ? 'ok' : 'fail');
+  fb.style.display = 'block';
+  
+  document.getElementById('btn-check').style.display = 'none';
+  document.getElementById('btn-next').style.display = 'block';
+  
+  reportData.push({ 
+    num: (currentMode * 3) + currentIdx + 1,
+    title: currentMode === 0 ? "Entidades" : currentMode === 1 ? "Relaciones" : "Atributos",
+    status: correct ? "Correcto" : "Incorrecto",
+    detail: debugInfo,
+    explain: explain
+  });
+  render();
 }
 
-function nextStep() {
-    selectedItems = new Set();
-    relAnswers = {};
-    currentEx++;
-    render();
+function next() {
+  isChecked = false;
+  selected.clear();
+  rels = {};
+  currentIdx++;
+  if(currentIdx > 2) {
+    currentIdx = 0;
+    currentMode++;
+    if(currentMode > 2) return showFinal();
+    updateTabs();
+  }
+  render();
 }
 
-function showFinalResults() {
-    document.getElementById('main-interface').style.display = 'none';
-    document.getElementById('results-area').style.display = 'block';
-    const totalPosible = (history.length) * 10;
-    const pct = Math.round((score / totalPosible) * 100);
-    document.getElementById('final-pct').innerText = pct + "%";
+function updateTabs() {
+  [0,1,2].forEach(i => document.getElementById('tab'+i).className = 'tab' + (i===currentMode ? ' active' : ''));
+}
+
+function showFinal() {
+  document.getElementById('main-game').style.display = 'none';
+  document.getElementById('results-area').style.display = 'block';
+  const pct = Math.round((score / 90) * 100);
+  document.getElementById('final-pct').innerText = pct + "%";
+  document.getElementById('final-stats').innerText = `Puntos: ${score} de 90 posibles (${totalAnswered} ejercicios realizados).`;
 }
 
 function generatePDF() {
-    const doc = new jsPDF();
-    const fecha = new Date().toLocaleString();
-    
-    doc.setFontSize(20);
-    doc.setTextColor(29, 158, 117);
-    doc.text("Informe de Práctica ER.lab", 20, 20);
-    
-    doc.setFontSize(12);
+  const doc = new jsPDF();
+  doc.setFont("helvetica", "bold");
+  doc.text("INFORME DE TRABAJO - ER.LAB", 20, 20);
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Fecha: ${new Date().toLocaleDateString()} | Puntaje Total: ${score}/90`, 20, 30);
+  
+  let y = 45;
+  reportData.forEach(d => {
+    if(y > 270) { doc.addPage(); y = 20; }
+    doc.setFont(undefined, 'bold');
+    doc.text(`Ejercicio ${d.num} - ${d.title}: [${d.status}]`, 20, y);
+    y += 6;
+    doc.setFont(undefined, 'normal');
+    const splitDetail = doc.splitTextToSize(d.detail, 170);
+    doc.text(splitDetail, 20, y);
+    y += (splitDetail.length * 5);
+    const splitExpl = doc.splitTextToSize("Explicación: " + d.explain, 170);
     doc.setTextColor(100);
-    doc.text(`Fecha: ${fecha}`, 20, 30);
-    doc.text(`Puntaje Total: ${score} puntos`, 20, 38);
-    
-    doc.setDrawColor(200);
-    doc.line(20, 45, 190, 45);
-    
-    let y = 55;
-    history.forEach((entry, i) => {
-        const modNames = ["Identificación de Entidades", "Relaciones (Cardinalidad)", "Atributos"];
-        doc.setTextColor(0);
-        doc.setFont(undefined, 'bold');
-        doc.text(`${i+1}. ${modNames[entry.mode]}`, 20, y);
-        y += 7;
-        doc.setFont(undefined, 'normal');
-        doc.setTextColor(entry.correct ? 30 : 150, entry.correct ? 120 : 30, 30);
-        doc.text(`Resultado: ${entry.correct ? 'CORRECTO' : 'INCORRECTO'}`, 20, y);
-        y += 7;
-        doc.setTextColor(80);
-        doc.text(`Tu respuesta: ${entry.detail}`, 20, y);
-        y += 15;
-        
-        if (y > 270) { doc.addPage(); y = 20; }
-    });
-    
-    doc.save("Entrega_BaseDeDatos.pdf");
+    doc.text(splitExpl, 20, y);
+    doc.setTextColor(0);
+    y += (splitExpl.length * 5) + 10;
+  });
+  
+  doc.save("Entrega_ER_Lab.pdf");
 }
 
 render();
 </script>
-
 </body>
 </html>
